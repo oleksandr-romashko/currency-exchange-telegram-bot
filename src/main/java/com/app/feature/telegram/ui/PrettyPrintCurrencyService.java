@@ -1,4 +1,4 @@
-package com.app.feature.ui;
+package com.app.feature.telegram.ui;
 
 import com.app.feature.currency.dto.Currency;
 import com.app.feature.currency.dto.CurrencyItem;

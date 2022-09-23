@@ -5,7 +5,7 @@ import com.app.feature.currency.PrivatBankCurrencyService;
 import com.app.feature.currency.dto.Currency;
 import com.app.feature.currency.dto.CurrencyItem;
 import com.app.feature.telegram.command.*;
-import com.app.feature.ui.PrettyPrintCurrencyService;
+import com.app.feature.telegram.ui.PrettyPrintCurrencyService;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -46,6 +46,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
             }
 
 
+            assert currencyRate != null;
             String prettyText = prettyPrintCurrencyService.convert(currencyRate, currency);
 
             SendMessage responseMessage = new SendMessage();
@@ -63,11 +64,11 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
 
     @Override
     public String getBotUsername() {
-        return BotConstants.BOT_NAME;
+        return new BotConstants().propertiesReader("bot.name");
     }
 
     @Override
     public String getBotToken() {
-        return BotConstants.BOT_TOKEN;
+        return new BotConstants().propertiesReader("bot.token");
     }
 }
