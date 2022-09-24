@@ -11,33 +11,42 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-
-public class StartCommand extends BotCommand {
-    public StartCommand() {
-        super("start", "With this command you can start the Bot");
+public class SettingsCommand extends BotCommand {
+    public SettingsCommand() {
+        super("settings", "With this command you can customize your bot");
     }
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
-        System.out.println("Start pressed!");
-        String text = "Welcome! This bot will help you track current exchange rates...";
+        System.out.println("Settings pressed!");
+        String text = "Settings";
         SendMessage message = new SendMessage();
         message.setText(text);
         message.setChatId(chat.getId().toString());
 
-        KeyboardButton getInfoButton = KeyboardButton.builder().text("/get_info").build();
-        KeyboardButton settingsButton = KeyboardButton.builder().text("/settings").build();
+        KeyboardButton decimalPlacesButton = KeyboardButton.builder().text("/decimal_places").build();
+        KeyboardButton currencyButton = KeyboardButton.builder().text("/currency").build();
+        KeyboardButton notificationTimeButton = KeyboardButton.builder().text("/notification_time").build();
+        KeyboardButton bankButton = KeyboardButton.builder().text("/bank").build();
 
         KeyboardRow keyboardRow1 = new KeyboardRow();
-        keyboardRow1.add(getInfoButton);
+        keyboardRow1.add(decimalPlacesButton);
 
         KeyboardRow keyboardRow2 = new KeyboardRow();
-        keyboardRow2.add(settingsButton);
+        keyboardRow2.add(currencyButton);
+
+        KeyboardRow keyboardRow3 = new KeyboardRow();
+        keyboardRow3.add(notificationTimeButton);
+
+        KeyboardRow keyboardRow4 = new KeyboardRow();
+        keyboardRow4.add(bankButton);
 
         ReplyKeyboardMarkup keyboard = ReplyKeyboardMarkup
                 .builder()
                 .keyboardRow(keyboardRow1)
                 .keyboardRow(keyboardRow2)
+                .keyboardRow(keyboardRow3)
+                .keyboardRow(keyboardRow4)
                 .build();
 
         message.setReplyMarkup(keyboard);
