@@ -108,21 +108,29 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
     }
 
     private void onDecimalPlacesPressed() {
+        System.out.println("Decimal_places pressed!");
+
         String text = "Кілкість знаків після коми";
         sendMessageWithKeyboard(text, chatId, null);
     }
 
     private void onCurrencyPressed() {
+        System.out.println("Currency pressed!");
+
         String text = "Вибір валюти";
         sendMessageWithKeyboard(text, chatId, null);
     }
 
     private void onNotificationTimePressed() {
+        System.out.println("Notification_time pressed!");
+
         String text = "Час сповіщень";
         sendMessageWithKeyboard(text, chatId, null);
     }
 
     private void onBankPressed() {
+        System.out.println("Bank pressed!");
+
         String text = "Обрати банк";
         sendMessageWithKeyboard(text, chatId, null);
     }
