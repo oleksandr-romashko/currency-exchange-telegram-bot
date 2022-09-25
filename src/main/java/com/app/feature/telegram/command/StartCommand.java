@@ -28,7 +28,7 @@ public class StartCommand extends BotCommand {
 
         List<InlineKeyboardButton> keyboardRow1 = new ArrayList<>();
         List<InlineKeyboardButton> keyboardRow2 = new ArrayList<>();
-        InlineKeyboardButton getInfoButton = InlineKeyboardButton.builder().text("Get info").callbackData("getInfo").build();
+        InlineKeyboardButton getInfoButton = InlineKeyboardButton.builder().text("Get info").callbackData("get_info").build();
         InlineKeyboardButton settingsButton = InlineKeyboardButton.builder().text("Settings").callbackData("settings").build();
         keyboardRow1.add(getInfoButton);
         keyboardRow2.add(settingsButton);
