@@ -5,14 +5,12 @@ import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class StartCommand extends BotCommand {
@@ -23,37 +21,25 @@ public class StartCommand extends BotCommand {
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
         System.out.println("Start pressed!");
-        String text = "Use menu buttons for navigate:";
+        String text = "Welcome! This bot will help you track current exchange rates...";
         SendMessage message = new SendMessage();
         message.setText(text);
         message.setChatId(chat.getId().toString());
 
-        KeyboardButton currentButton = KeyboardButton.builder().text("/current").build();
-        KeyboardButton dayRateButton = KeyboardButton.builder().text("/day_rate").build();
-        KeyboardButton currencyButton = KeyboardButton.builder().text("/currency").build();
-        KeyboardButton calcButton = KeyboardButton.builder().text("/calculator").build();
-        KeyboardButton bankButton = KeyboardButton.builder().text("/bank").build();
-        KeyboardButton graphicsButton = KeyboardButton.builder().text("/graphics").build();
-        KeyboardButton settingsButton = KeyboardButton.builder().text("/settings").build();
+        List<InlineKeyboardButton> keyboardRow1 = new ArrayList<>();
+        List<InlineKeyboardButton> keyboardRow2 = new ArrayList<>();
+        InlineKeyboardButton getInfoButton = InlineKeyboardButton.builder().text("Get info").callbackData("getInfo").build();
+        InlineKeyboardButton settingsButton = InlineKeyboardButton.builder().text("Settings").callbackData("settings").build();
+        keyboardRow1.add(getInfoButton);
+        keyboardRow2.add(settingsButton);
 
-        KeyboardRow keyboardRow1 = new KeyboardRow();
-        keyboardRow1.add(currentButton);
-        keyboardRow1.add(dayRateButton);
-        keyboardRow1.add(currencyButton);
+        List<List<InlineKeyboardButton>> rowList= new ArrayList<>();
+        rowList.add(keyboardRow1);
+        rowList.add(keyboardRow2);
 
-        KeyboardRow keyboardRow2 = new KeyboardRow();
-        keyboardRow2.add(calcButton);
-        keyboardRow2.add(bankButton);
-        keyboardRow2.add(graphicsButton);
-
-        KeyboardRow keyboardRow3 = new KeyboardRow();
-        keyboardRow3.add(settingsButton);
-
-        ReplyKeyboardMarkup keyboard = ReplyKeyboardMarkup
+        InlineKeyboardMarkup keyboard = InlineKeyboardMarkup
                 .builder()
-                .keyboardRow(keyboardRow1)
-                .keyboardRow(keyboardRow2)
-                .keyboardRow(keyboardRow3)
+                .keyboard(rowList)
                 .build();
 
         message.setReplyMarkup(keyboard);
