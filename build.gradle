@@ -28,11 +28,11 @@ dependencies {
     implementation group: 'com.vdurmont', name: 'emoji-java', version: '5.1.1'
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(14))
-    }
-}
+//java {
+//    toolchain {
+//        languageVersion.set(JavaLanguageVersion.of(14))
+//    }
+//}
 
 test {
     useJUnitPlatform()

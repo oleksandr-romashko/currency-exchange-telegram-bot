@@ -5,11 +5,11 @@ import com.app.feature.currency.dto.CurrencyItem;
 import com.vdurmont.emoji.EmojiParser;
 
 public class PrettyPrintCurrencyService {
-    private String euro_emoji = EmojiParser.parseToUnicode(":eu:");
-    private String dollar_emoji = EmojiParser.parseToUnicode(":us:");
-    private String bitcoin_emoji = EmojiParser.parseToUnicode(":moneybag:");
-    private String rur_emoji = EmojiParser.parseToUnicode(":ru:");
-    private String ua_emoji = EmojiParser.parseToUnicode(":ua:");
+    private final String euro_emoji = EmojiParser.parseToUnicode(":eu:");
+    private final String dollar_emoji = EmojiParser.parseToUnicode(":us:");
+    private final String bitcoin_emoji = EmojiParser.parseToUnicode(":moneybag:");
+    private final String rur_emoji = EmojiParser.parseToUnicode(":ru:");
+    private final String ua_emoji = EmojiParser.parseToUnicode(":ua:");
 
     public String convert(CurrencyItem currencyItem, Currency currency) {
         String currencyOneFlag = getCurrencyFlag(currency.name());

@@ -4,7 +4,6 @@ import com.app.feature.currency.dto.Currency;
 import com.app.feature.currency.dto.CurrencyItem;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.vdurmont.emoji.EmojiParser;
 import org.jsoup.Jsoup;
 
 import java.io.IOException;
@@ -32,7 +31,7 @@ public class PrivatBankCurrencyService implements CurrencyService {
                 .getParameterized(List.class, CurrencyItem.class)
                 .getType();
         List<CurrencyItem> currencyItems = new Gson().fromJson(json, typeToken);
-
+        
         return currencyItems.stream()
                 .filter(it -> it.getCcy() == currency)
                 .findFirst()
