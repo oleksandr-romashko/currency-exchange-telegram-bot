@@ -1,5 +1,6 @@
 package com.app.feature.user;
 
+import com.app.feature.currency.dto.Bank;
 import com.app.feature.currency.dto.Currency;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -77,21 +78,70 @@ public class UserUtil {
         return getUserById(usersList, userId).getUserCurrency();
     }
 
+    public List<Bank> getBankTypeByUserId(Long userId) {
+        List<UserInfo> usersList = read();
+        return getUserById(usersList, userId).getUserBank();
+    }
+
+    public Integer getRoundingByUserId(Long userId) {
+        List<UserInfo> usersList = read();
+        return getUserById(usersList, userId).getRounding();
+    }
+
+    public String getAlarmTimeByUserId(Long userId) {
+        List<UserInfo> usersList = read();
+        return getUserById(usersList, userId).getAlarmTime();
+    }
+
     public void setCurrencyTypeByUserId(Long userId, Currency currency) {
         List<UserInfo> usersList = read();
         UserInfo userById = getUserById(usersList, userId);
         List<Currency> userCurrency = userById.getUserCurrency();
-        if(!doesCurrencySaved(userCurrency, currency)) {
-            userCurrency.add(currency);
-        } else {
+        if(doesCurrencySaved(userCurrency, currency)) {
             userCurrency.remove(currency);
+        } else {
+            userCurrency.add(currency);
         }
         userById.setUserCurrency(userCurrency);
 
         write(usersList);
     }
 
+    public void setBankTypeByUserId(Long userId, Bank bank) {
+        List<UserInfo> usersList = read();
+        UserInfo userById = getUserById(usersList, userId);
+        List<Bank> userBanks = userById.getUserBank();
+        if(doesBankSaved(userBanks, bank)) {
+            userBanks.remove(bank);
+        } else {
+            userBanks.add(bank);
+        }
+        userById.setUserBank(userBanks);
+
+        write(usersList);
+    }
+
+    public void setRoundingByUserId(Long userId, Integer number) {
+        List<UserInfo> usersList = read();
+        UserInfo userById = getUserById(usersList, userId);
+        userById.setRounding(number);
+
+        write(usersList);
+    }
+
+    public void setAlarmTimeByUserId(Long userId, String alarmTime) {
+        List<UserInfo> usersList = read();
+        UserInfo userById = getUserById(usersList, userId);
+        userById.setAlarmTime(alarmTime);
+
+        write(usersList);
+    }
+
     private boolean doesCurrencySaved(List<Currency> saved, Currency current) {
-        return !saved.stream().filter(currency -> currency.equals(current)).findFirst().isEmpty();
+        return saved.stream().anyMatch(currency -> currency.equals(current));
+    }
+
+    private boolean doesBankSaved(List<Bank> saved, Bank current) {
+        return saved.stream().anyMatch(bank -> bank.equals(current));
     }
 }

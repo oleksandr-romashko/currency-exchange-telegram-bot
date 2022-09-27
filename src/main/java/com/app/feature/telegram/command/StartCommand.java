@@ -70,7 +70,7 @@ public class StartCommand extends BotCommand {
             Currency currency = Currency.valueOf(new PropertiesConstants().propertiesReader("user.default.currency"));
             Bank bank = Bank.valueOf(new PropertiesConstants().propertiesReader("user.default.bank"));
             int rounding = Integer.parseInt(new PropertiesConstants().propertiesReader("user.default.rounding"));
-            int alarmTime = Integer.parseInt(new PropertiesConstants().propertiesReader("user.default.alarm_time"));
+            String alarmTime = new PropertiesConstants().propertiesReader("user.default.alarm_time");
 
             UserInfo newUser = new UserInfo(userId, firstName, userName, currency, bank, rounding, alarmTime);
             usersList.add(newUser);

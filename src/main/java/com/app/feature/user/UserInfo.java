@@ -13,10 +13,10 @@ public class UserInfo {
     private String userName;
     private List<Currency> userCurrency;
     private List<Bank> userBank;
-    private int rounding;
-    private int alarmTime;
+    private Integer rounding;
+    private String alarmTime;
 
-    public UserInfo(Long chatId, String firstName, String userName, Currency userCurrency, Bank userBank, int rounding, int alarmTime) {
+    public UserInfo(Long chatId, String firstName, String userName, Currency userCurrency, Bank userBank, int rounding, String alarmTime) {
         this.chatId = chatId;
         this.firstName = firstName;
         this.userName = userName;

@@ -11,7 +11,7 @@
       "PrivatBank"
     ],
     "rounding": 2,
-    "alarmTime": 9
+    "alarmTime": "9"
   },
   {
     "chatId": 743395488,
@@ -22,9 +22,10 @@
       "EUR"
     ],
     "userBank": [
-      "PrivatBank"
+      "MonoBank",
+      "NBU"
     ],
-    "rounding": 2,
-    "alarmTime": 9
+    "rounding": 4,
+    "alarmTime": "10"
   }
 ]
