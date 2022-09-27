@@ -18,8 +18,8 @@ public class PrettyPrintCurrencyService {
         float roundedBuyRate = Math.round(currencyItem.getBuy() * 100d)/100f;
         float roundedSaleRate = Math.round(currencyItem.getSale() * 100d)/100f;
 
-        return  "Exchange rate in PrivatBank:" + System.lineSeparator() + currency.name() + "/" + currencyItem.getBase_ccy() + "   " + currencyOneFlag + "/"
-                + currencyTwoFlag + System.lineSeparator() + "Buying: " + roundedBuyRate + " / " + "Selling: "
+        return  "Exchange rate in PrivatBank:" + System.lineSeparator() + currencyItem.getBase_ccy() + "/" + currency.name() + "   " + currencyTwoFlag + "/"
+                + currencyOneFlag + System.lineSeparator() + "Buying: " + roundedBuyRate + " / " + "Selling: "
                 + roundedSaleRate;
     }
 

@@ -17,7 +17,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -77,12 +76,8 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
         System.out.println("Get_info pressed!");
         Currency currency = Currency.USD;
 
-        CurrencyItem currencyRate = null;
-        try {
-            currencyRate = currencyService.getRate(currency);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        CurrencyItem currencyRate;
+        currencyRate = currencyService.getRate(currency);
 
         assert currencyRate != null;
         String prettyText = prettyPrintCurrencyService.convert(currencyRate, currency);
@@ -220,7 +215,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
             userUtil.setAlarmTimeByUserId(chatId, newAlarmTime);
             savedAlarmTime = userUtil.getAlarmTimeByUserId(chatId);
 
-            InlineKeyboardButton turnOffNotificationsButton = InlineKeyboardButton.builder().text(getAlarmTimeButton(savedAlarmTime, "Turn off notifications")).callbackData("Turn off notifications:_alarm_time").build();
+            InlineKeyboardButton turnOffNotificationsButton = InlineKeyboardButton.builder().text(getAlarmTimeButton(savedAlarmTime, "Turn off")).callbackData("Turn off:_alarm_time").build();
             List<InlineKeyboardButton> buttons = new ArrayList<>();
             for (int i = 9; i < 19; i++) {
                 buttons.add(InlineKeyboardButton.builder().text(getAlarmTimeButton(savedAlarmTime, String.valueOf(i)))
@@ -286,15 +281,6 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
     }
 
     private String getAlarmTimeButton(String saved, String param) {
-        System.out.println("saved = " + saved);
-        System.out.println("param = " + param);
-        System.out.println("saved.contains(\"turn_off_notifications\") = " + saved.equals("turn_off_notifications"));
-
-        if(saved.contains("Turn off notifications")){
-            System.out.println("saved = " + saved);
-            System.out.println("param = " + param);
-            return Objects.equals(saved, param) ? "Turned off" + EmojiParser.parseToUnicode(":white_check_mark:") : param;
-        }
         return Objects.equals(saved, param) ? param + EmojiParser.parseToUnicode(":white_check_mark:") : param;
     }
 
