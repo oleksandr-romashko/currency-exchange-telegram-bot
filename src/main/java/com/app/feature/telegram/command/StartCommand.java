@@ -28,34 +28,8 @@ public class StartCommand extends BotCommand {
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
         System.out.println("Start pressed!");
         registerUser(user);
-        String text = "Welcome! This bot will help you track current exchange rates...";
-        SendMessage message = new SendMessage();
-        message.setText(text);
-        message.setChatId(chat.getId().toString());
-
-        List<InlineKeyboardButton> keyboardRow1 = new ArrayList<>();
-        List<InlineKeyboardButton> keyboardRow2 = new ArrayList<>();
-        InlineKeyboardButton getInfoButton = InlineKeyboardButton.builder().text("Get info").callbackData("get_info").build();
-        InlineKeyboardButton settingsButton = InlineKeyboardButton.builder().text("Settings").callbackData("settings").build();
-        keyboardRow1.add(getInfoButton);
-        keyboardRow2.add(settingsButton);
-
-        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-        rowList.add(keyboardRow1);
-        rowList.add(keyboardRow2);
-
-        InlineKeyboardMarkup keyboard = InlineKeyboardMarkup
-                .builder()
-                .keyboard(rowList)
-                .build();
-
-        message.setReplyMarkup(keyboard);
-
-        try {
-            absSender.execute(message);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+        String text = "Hello, " + user.getFirstName() + "!" + System.lineSeparator() + System.lineSeparator() + "Welcome! This is an automatic system \"Currency Exchange Bot\" that will help you track current exchange rates...";
+        onMenuPressed(text, chat.getId().toString(), absSender);
     }
 
     private void registerUser(User user) {
@@ -76,5 +50,34 @@ public class StartCommand extends BotCommand {
             usersList.add(newUser);
             new UserUtil().write(usersList);
         }
+    }
+
+    public void onMenuPressed(String text, String chatId, AbsSender absSender) {
+        InlineKeyboardButton getInfoButton = InlineKeyboardButton.builder().text("Get info").callbackData("get_info").build();
+        InlineKeyboardButton settingsButton = InlineKeyboardButton.builder().text("Settings").callbackData("settings").build();
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>(List.of(List.of(getInfoButton), List.of(settingsButton)));
+        sendMessageWithKeyboard(text, chatId, makeKeyboard(rowList),absSender);
+    }
+
+    private void sendMessageWithKeyboard(String text, String chatId, InlineKeyboardMarkup keyboard, AbsSender absSender) {
+        SendMessage message = new SendMessage();
+        message.setText(text);
+        message.setChatId(chatId);
+        if (keyboard != null) {
+            message.setReplyMarkup(keyboard);
+        }
+
+        try {
+            absSender.execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private InlineKeyboardMarkup makeKeyboard(List<List<InlineKeyboardButton>> rowList) {
+        return InlineKeyboardMarkup
+                .builder()
+                .keyboard(rowList)
+                .build();
     }
 }
