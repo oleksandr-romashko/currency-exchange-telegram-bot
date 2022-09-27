@@ -20,3 +20,7 @@ Telegram bot application for obtaining exchange rates of three Ukrainian banks u
 In terminal in projects root use `java -jar ./build/libs/CurrencyExchange-TelegramBot-all-1.0-SNAPSHOT.jar` command. Application will start.
 
 To terminate application use `Ctrl + C` shotrkey.
+
+## User settings storing
+
+All user setting are stored in `users.json` file in `src/main/resources` directory and may be reused after application restart.
