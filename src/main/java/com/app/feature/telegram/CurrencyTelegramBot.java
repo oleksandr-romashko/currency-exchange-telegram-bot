@@ -86,17 +86,8 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
 
         CurrencyItem currencyRate;
         currencyRate = currencyService.getRate(currency);
-
-        assert currencyRate != null;
         String prettyText = prettyPrintCurrencyService.convert(currencyRate, currency);
-
-        InlineKeyboardButton getInfoButton = InlineKeyboardButton.builder().text("Get info").callbackData("get_info").build();
-        InlineKeyboardButton settingsButton = InlineKeyboardButton.builder().text("Settings").callbackData("settings").build();
-        List<InlineKeyboardButton> keyboardRow1 = new ArrayList<>(List.of(getInfoButton));
-        List<InlineKeyboardButton> keyboardRow2 = new ArrayList<>(List.of(settingsButton));
-        List<List<InlineKeyboardButton>> rowList = new ArrayList<>(List.of(keyboardRow1, keyboardRow2));
-
-        sendMessageWithKeyboard(prettyText, chatId.toString(), makeKeyboard(rowList));
+        onBackToMenuPressed(prettyText);
     }
 
     private void onSettingsPressed() {
@@ -106,7 +97,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
         InlineKeyboardButton currencyButton = InlineKeyboardButton.builder().text("Currency").callbackData("currency").build();
         InlineKeyboardButton notificationTimeButton = InlineKeyboardButton.builder().text("Notification time").callbackData("notification_time").build();
         InlineKeyboardButton bankButton = InlineKeyboardButton.builder().text("Bank").callbackData("bank").build();
-        InlineKeyboardButton getInfoButton = InlineKeyboardButton.builder().text("Get info").callbackData("get_info").build();
+        InlineKeyboardButton getInfoButton = InlineKeyboardButton.builder().text("Go back").callbackData("main_menu").build();
         List<InlineKeyboardButton> keyboardRow1 = new ArrayList<>(List.of(decimalPlacesButton));
         List<InlineKeyboardButton> keyboardRow2 = new ArrayList<>(List.of(currencyButton));
         List<InlineKeyboardButton> keyboardRow3 = new ArrayList<>(List.of(notificationTimeButton));
@@ -115,6 +106,13 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>(List.of(keyboardRow1, keyboardRow2, keyboardRow3, keyboardRow4, keyboardRow5));
 
         sendMessageWithKeyboard("Settings:", chatId.toString(), makeKeyboard(rowList));
+    }
+
+    private void onBackToMenuPressed(String text) {
+        InlineKeyboardButton getInfoButton = InlineKeyboardButton.builder().text("Get info").callbackData("get_info").build();
+        InlineKeyboardButton settingsButton = InlineKeyboardButton.builder().text("Settings").callbackData("settings").build();
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>(List.of(List.of(getInfoButton), List.of(settingsButton)));
+        sendMessageWithKeyboard(text, chatId.toString(), makeKeyboard(rowList));
     }
 
     private void onDecimalPlacesPressed() {
@@ -321,6 +319,8 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
                 onCurrencyPressed();
             } else if (update.getCallbackQuery().getData().equals("bank")) {
                 onBankPressed();
+            } else if (update.getCallbackQuery().getData().equals("main_menu")) {
+                onBackToMenuPressed("Main menu:");
             } else if (update.getCallbackQuery().getData().equals("back_to_settings")) {
                 onSettingsPressed();
             } else if (update.getCallbackQuery().getData().contains("Currency:")) {
