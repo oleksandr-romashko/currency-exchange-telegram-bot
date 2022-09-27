@@ -25,7 +25,7 @@
       "MonoBank",
       "NBU"
     ],
-    "rounding": 4,
-    "alarmTime": "Turn off"
+    "rounding": 3,
+    "alarmTime": "18"
   }
 ]
