@@ -8,10 +8,12 @@ version '1.0-SNAPSHOT'
 
 compileJava.options.encoding = 'UTF-8'
 
+//Get dependencies from Maven central repository
 repositories {
     mavenCentral()
 }
 
+//Project dependencies
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
@@ -28,24 +30,32 @@ dependencies {
     implementation group: 'com.vdurmont', name: 'emoji-java', version: '5.1.1'
 }
 
-//java {
-//    toolchain {
-//        languageVersion.set(JavaLanguageVersion.of(14))
-//    }
-//}
+compileJava {
+    sourceCompatibility = '14'
+    targetCompatibility = '14'
+}
 
 test {
     useJUnitPlatform()
 }
 
 jar {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
     manifest {
         attributes 'Main-Class': 'TelegramBotApp'
     }
+}
 
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    manifest {
+        attributes 'Implementation-Version': archiveVersion,
+                'Main-Class': 'TelegramBotApp'
+    }
+    baseName = project.name + '-all'
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
+    with jar
 }
