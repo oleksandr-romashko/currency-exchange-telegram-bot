@@ -114,7 +114,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
         List<InlineKeyboardButton> keyboardRow5 = new ArrayList<>(List.of(getInfoButton));
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>(List.of(keyboardRow1, keyboardRow2, keyboardRow3, keyboardRow4, keyboardRow5));
 
-        sendMessageWithKeyboard("Settings", chatId.toString(), makeKeyboard(rowList));
+        sendMessageWithKeyboard("Settings:", chatId.toString(), makeKeyboard(rowList));
     }
 
     private void onDecimalPlacesPressed() {
