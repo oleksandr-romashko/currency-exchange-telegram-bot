@@ -85,6 +85,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
 
     private void onGetInfoPressed() {
         System.out.println("Get_info pressed!");
+
         int rounding = userUtil.getRoundingByUserId(chatId);
         List<Currency> savedCurrency = userUtil.getCurrencyTypeByUserId(chatId);
         System.out.println("savedCurrency = " + savedCurrency);
@@ -102,7 +103,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
         InlineKeyboardButton currencyButton = InlineKeyboardButton.builder().text("Currency").callbackData("currency").build();
         InlineKeyboardButton notificationTimeButton = InlineKeyboardButton.builder().text("Notification time").callbackData("notification_time").build();
         InlineKeyboardButton bankButton = InlineKeyboardButton.builder().text("Bank").callbackData("bank").build();
-        InlineKeyboardButton getInfoButton = InlineKeyboardButton.builder().text("Go back").callbackData("main_menu").build();
+        InlineKeyboardButton getInfoButton = InlineKeyboardButton.builder().text("Back to main menu").callbackData("main_menu").build();
         List<InlineKeyboardButton> keyboardRow1 = new ArrayList<>(List.of(decimalPlacesButton));
         List<InlineKeyboardButton> keyboardRow2 = new ArrayList<>(List.of(currencyButton));
         List<InlineKeyboardButton> keyboardRow3 = new ArrayList<>(List.of(notificationTimeButton));
@@ -121,9 +122,9 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
     }
 
     private void onDecimalPlacesPressed() {
-        System.out.println("Decimal_places pressed!");
+        System.out.println("Decimal_places setting pressed!");
 
-        String text = "Select the number of decimal places:";
+        String text = "Select the number of decimal places for the exchange rate to be displayed (the number will be rounded):";
         Integer savedRounding = userUtil.getRoundingByUserId(chatId);
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
         for (int i = 2; i < 5; i++) {
@@ -155,9 +156,9 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
     }
 
     private void onCurrencyPressed() {
-        System.out.println("Currency pressed!");
+        System.out.println("Currency setting pressed!");
 
-        String text = "Select the currency/currencies:";
+        String text = "Select the currency to be displayed:";
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
         List<Currency> savedCurrency = userUtil.getCurrencyTypeByUserId(chatId);
         for (Currency currency : Arrays.stream(Currency.values()).limit(3).collect(Collectors.toList())) {
@@ -185,9 +186,9 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
     }
 
     private void onNotificationTimePressed() {
-        System.out.println("Notification_time pressed!");
+        System.out.println("Notification_time setting pressed!");
 
-        String text = "Select notification time:";
+        String text = "Select daily notification time or turn it off:";
         String savedAlarmTime = userUtil.getAlarmTimeByUserId(chatId);
         InlineKeyboardButton turnOffNotificationsButton = InlineKeyboardButton.builder().text(getAlarmTimeButton(savedAlarmTime, "Turn off")).callbackData("Turn off:_alarm_time").build();
         List<InlineKeyboardButton> buttons = new ArrayList<>();
@@ -230,9 +231,9 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
     }
 
     private void onBankPressed() {
-        System.out.println("Bank pressed!");
+        System.out.println("Bank setting pressed!");
 
-        String text = "Select the bank/banks:";
+        String text = "Select the bank to be displayed:";
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
         List<Bank> savedBanks = userUtil.getBankTypeByUserId(chatId);
         for (Bank bank : Bank.values()) {
