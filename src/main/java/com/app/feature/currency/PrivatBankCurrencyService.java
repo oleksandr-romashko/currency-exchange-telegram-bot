@@ -26,7 +26,7 @@ public class PrivatBankCurrencyService implements CurrencyService {
                     .text();
         } catch (IOException e) {
             e.printStackTrace();
-            throw new IllegalStateException("Can't connect to Privat API");
+            throw new IllegalStateException("Can't connect to PrivatBank API");
         }
         Type typeToken = TypeToken
                 .getParameterized(List.class, CurrencyItem.class)
