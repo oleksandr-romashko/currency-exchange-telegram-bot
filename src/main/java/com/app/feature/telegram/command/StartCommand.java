@@ -56,7 +56,7 @@ public class StartCommand extends BotCommand {
         InlineKeyboardButton getInfoButton = InlineKeyboardButton.builder().text("Get info").callbackData("get_info").build();
         InlineKeyboardButton settingsButton = InlineKeyboardButton.builder().text("Settings").callbackData("settings").build();
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>(List.of(List.of(getInfoButton), List.of(settingsButton)));
-        sendMessageWithKeyboard(text, chatId, makeKeyboard(rowList),absSender);
+        sendMessageWithKeyboard(text, chatId, createKeyboard(rowList),absSender);
     }
 
     private void sendMessageWithKeyboard(String text, String chatId, InlineKeyboardMarkup keyboard, AbsSender absSender) {
@@ -74,7 +74,7 @@ public class StartCommand extends BotCommand {
         }
     }
 
-    private InlineKeyboardMarkup makeKeyboard(List<List<InlineKeyboardButton>> rowList) {
+    private InlineKeyboardMarkup createKeyboard(List<List<InlineKeyboardButton>> rowList) {
         return InlineKeyboardMarkup
                 .builder()
                 .keyboard(rowList)

@@ -8,11 +8,12 @@ import org.jsoup.Jsoup;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PrivatBankCurrencyService implements CurrencyService {
     @Override
-    public CurrencyItem getRate(Currency currency) {
+    public List<CurrencyItem> getRate(List<Currency> currencyList) {
         String url = "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=11";
 
         String json;
@@ -31,10 +32,16 @@ public class PrivatBankCurrencyService implements CurrencyService {
                 .getParameterized(List.class, CurrencyItem.class)
                 .getType();
         List<CurrencyItem> currencyItems = new Gson().fromJson(json, typeToken);
-        
-        return currencyItems.stream()
-                .filter(it -> it.getCcy() == currency)
-                .findFirst()
-                .orElseThrow();
+        System.out.println("currencyItems = " + currencyItems);
+        List<CurrencyItem> currencyItemPrivatList = new ArrayList<>();
+
+        for(Currency currency: currencyList) {
+            String currencyName = currency.name().equals("RUB") ? "RUR" : currency.name();
+            currencyItemPrivatList.add(currencyItems.stream()
+                    .filter(it -> it.getCcy().name().equals(currencyName))
+                    .findFirst()
+                    .orElseThrow());
+        }
+        return currencyItemPrivatList;
     }
 }
