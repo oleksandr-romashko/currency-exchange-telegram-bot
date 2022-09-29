@@ -1,7 +1,7 @@
 package com.app.feature.user;
 
+import com.app.feature.api.dto.Currency;
 import com.app.feature.currency.dto.Bank;
-import com.app.feature.currency.dto.Currency;
 import lombok.Data;
 
 import java.util.List;
