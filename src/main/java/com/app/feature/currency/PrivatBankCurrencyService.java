@@ -16,6 +16,7 @@ public class PrivatBankCurrencyService implements CurrencyService {
     public List<CurrencyItem> getRate(List<Currency> currencyList) {
         String url = "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=11";
 
+        //get JSON from bank API
         String json;
         try {
             json = Jsoup
@@ -28,20 +29,28 @@ public class PrivatBankCurrencyService implements CurrencyService {
             e.printStackTrace();
             throw new IllegalStateException("Can't connect to PrivatBank API");
         }
+
+        //normalize PrivatBank currencies - obsolete RUR values replace with actual RUB value
+        json = json.replaceAll("RUR", "RUB");
+
+        //convert JSON to Java objects
         Type typeToken = TypeToken
                 .getParameterized(List.class, CurrencyItem.class)
                 .getType();
-        List<CurrencyItem> currencyItems = new Gson().fromJson(json, typeToken);
-        System.out.println("currencyItems = " + currencyItems);
-        List<CurrencyItem> currencyItemPrivatList = new ArrayList<>();
+        List<CurrencyItem> receivedApiCurrencies = new Gson().fromJson(json, typeToken);
+        System.out.println("receivedApiCurrencies = " + receivedApiCurrencies);
 
-        for(Currency currency: currencyList) {
-            String currencyName = currency.name().equals("RUB") ? "RUR" : currency.name();
-            currencyItemPrivatList.add(currencyItems.stream()
-                    .filter(it -> it.getCcy().name().equals(currencyName))
+        //find CurrencyItem
+        List<CurrencyItem> resultList = new ArrayList<>();
+        for(Currency currency : currencyList) {
+            CurrencyItem currencyItem = receivedApiCurrencies
+                    .stream()
+                    .filter(it -> it.getCcy().name().equals(currency.name()))
                     .findFirst()
-                    .orElseThrow());
+                    .orElseThrow();
+            resultList.add(currencyItem);
         }
-        return currencyItemPrivatList;
+
+        return resultList;
     }
 }

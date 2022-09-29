@@ -1,7 +1,9 @@
 package com.app.feature.api.dto;
 
 public enum Currency {
-    USD,
+    UAH,
     EUR,
+    USD,
+    RUB,
     GBP
 }

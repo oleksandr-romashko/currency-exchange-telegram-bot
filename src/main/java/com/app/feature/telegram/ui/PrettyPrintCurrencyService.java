@@ -9,7 +9,7 @@ public class PrettyPrintCurrencyService {
     private final String euro_emoji = EmojiParser.parseToUnicode(":eu:");
     private final String dollar_emoji = EmojiParser.parseToUnicode(":us:");
     private final String bitcoin_emoji = EmojiParser.parseToUnicode(":moneybag:");
-    private final String rur_emoji = EmojiParser.parseToUnicode(":ru:");
+    private final String rub_emoji = EmojiParser.parseToUnicode(":ru:");
     private final String ua_emoji = EmojiParser.parseToUnicode(":ua:");
 
     public String convert(List<CurrencyItem> currencyItemPrivatList, int rounding) {
@@ -47,7 +47,7 @@ public class PrettyPrintCurrencyService {
             case "BTC" -> bitcoin_emoji;
             case "EUR" -> euro_emoji;
             case "USD" -> dollar_emoji;
-            case "RUR" -> rur_emoji;
+            case "RUB" -> rub_emoji;
             default -> null;
         };
     }
