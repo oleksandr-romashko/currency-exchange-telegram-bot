@@ -50,4 +50,6 @@ bin/
 # Ignore Gradle build output directory
 /build/
 
+# Application generated files
 users.json
+*rates.json
