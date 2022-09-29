@@ -1,36 +1,29 @@
 package com.app.feature.user;
 
+import com.app.feature.api.dto.Currency;
 import com.app.feature.currency.dto.Bank;
-import com.app.feature.currency.dto.Currency;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.io.*;
+import java.lang.reflect.Type;
+import java.util.*;
 
 public class UserUtil {
+    public static final String USERS_PATH = "./src/main/resources/users.json";
     public void write(List<UserInfo> usersList) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(usersList);
-        File users = new File("./src/main/resources/users.json");
-        if (!users.exists()) {
-            users.getParentFile().mkdirs();
-            try {
-                users.createNewFile();
-            } catch (IOException e) {
-                System.err.println(e.getMessage());
-            }
-        }
-        try (FileOutputStream outputStream = new FileOutputStream(users)) {
-            outputStream.write(json.getBytes());
+        File file = new File(USERS_PATH);
+        try (FileWriter fileWriter = new FileWriter(file))
+        {
+            fileWriter.write(json);
+            fileWriter.flush();
         } catch (IOException e) {
-            System.err.println("Exception!!!" + e.getMessage());
+            e.printStackTrace();
+            System.out.println("Exception while writing to users.json file at \""
+                    + USERS_PATH + "\"");
         }
     }
 
@@ -45,26 +38,30 @@ public class UserUtil {
                 System.err.println(e.getMessage());
             }
         }
-        String usersJson = "";
+        StringBuilder jsonBuilder = new StringBuilder();
 
         try (FileInputStream inputStream = new FileInputStream(file)) {
             int ch = inputStream.read();
 
             while (ch != -1) {
-                usersJson += (char) ch;
+                jsonBuilder.append((char) ch);
                 ch = inputStream.read();
             }
         } catch (IOException e) {
             System.err.print(e.getMessage());
         }
 
-        List<UserInfo> users;
-        if(usersJson.equals("")) {
-            users  = new ArrayList<>();
+        String json = jsonBuilder.toString();
+        List<UserInfo> userList;
+            if(json.isBlank()) {
+            userList = new ArrayList<>();
         } else {
-            users = new Gson().fromJson(usersJson, new TypeToken<List<UserInfo>>() {}.getType());
+                Type typeToken = TypeToken
+                        .getParameterized(List.class, UserInfo.class)
+                        .getType();
+                userList = new Gson().fromJson(json, typeToken);
         }
-        return users;
+        return userList;
     }
 
     public UserInfo getUserById(List<UserInfo> usersList, Long userId) {
