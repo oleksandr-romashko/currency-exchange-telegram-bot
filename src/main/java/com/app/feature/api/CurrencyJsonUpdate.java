@@ -14,7 +14,7 @@ public class CurrencyJsonUpdate implements Runnable {
     @Getter
     private static final String ABSOLUTE_PATH_MONO = "./src/main/resources/Currency_Mono_rates.json";
     public static final String NBU_URL = "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json";
-    public static final String PRIVAT_URL = "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5";
+    public static final String PRIVAT_URL = "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=11";
     public static final String MONO_URL = "https://api.monobank.ua/bank/currency";
 
     @Getter
