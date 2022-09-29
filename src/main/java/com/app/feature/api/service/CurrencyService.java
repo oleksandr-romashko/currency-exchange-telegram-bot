@@ -1,10 +1,11 @@
 package com.app.feature.api.service;
 
+import com.app.feature.api.dto.AbstractCurrencyItem;
 import com.app.feature.api.dto.Currency;
 
-import java.util.Map;
+import java.util.List;
 
 public interface CurrencyService {
-    Map<String, Double> getRate(Currency currency);
+    List<AbstractCurrencyItem> getRates(List<Currency> savedCurrency);
 }
 
