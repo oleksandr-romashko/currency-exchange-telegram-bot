@@ -4,7 +4,5 @@ public enum Currency {
     EUR,
     USD,
     RUB,
-    UAH,
-    //TODO remove GBP
-    GBP
+    UAH
 }
