@@ -1,56 +1,80 @@
 package com.app.feature.api.service;
 
-import com.app.feature.api.CurrencyJsonUpdate;
-import com.app.feature.api.Utilities;
+import com.app.feature.api.CurrencyFileReaderService;
+import com.app.feature.api.dto.AbstractCurrencyItem;
 import com.app.feature.api.dto.Currency;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class PrivateBankCurrencyService implements CurrencyService {
 
     @Override
-    public Map<String, Double> getRate(Currency currency) {
+    public List<AbstractCurrencyItem> getRates(List<Currency> savedCurrency) {
 
-        //take json from file
-        String takeJsonFromFile = Utilities.writeFromJsonFile(CurrencyJsonUpdate.getABSOLUTE_PATH_PRIVAT());
+        //get JSON from file
+        String json = new CurrencyFileReaderService().getRatesForPrivatbank();
 
-        //Convert json => Java Object
+        //normalize Privatbank currencies - obsolete RUR values replace with actual RUB value
+        json = json.replaceAll("RUR", "RUB");
+
+        //convert JSON to Java objects
         Type typeToken = TypeToken
-                .getParameterized(List.class, CurrencyItemPrivat.class)
+                .getParameterized(List.class, CurrencyItemPrivatbank.class)
                 .getType();
-        List<CurrencyItemPrivat> currencyItemPrivats = new Gson().fromJson(takeJsonFromFile, typeToken);
+        List<CurrencyItemPrivatbank> receivedApiCurrencies = new Gson()
+                .fromJson(json, typeToken);
 
-        //Find currency
-        double privatBuy = currencyItemPrivats.stream()
-                .filter(it -> it.getCcy() == currency)
-                .map(CurrencyItemPrivat::getBuy)
-                .collect(Collectors.toList()).get(0);
-
-        double privatSele = currencyItemPrivats.stream()
-                .filter(it -> it.getCcy() == currency)
-                .map(CurrencyItemPrivat::getSale)
-                .collect(Collectors.toList()).get(0);
-
-        Map<String, Double> rate = new HashMap<>();
-        rate.put("buy" + currency, privatBuy);
-        rate.put("sell" + currency, privatSele);
-
-        return rate;
+        //find CurrencyItem
+        List<AbstractCurrencyItem> resultList = new ArrayList<>();
+        for(Currency currency : savedCurrency) {
+            AbstractCurrencyItem currencyItem = receivedApiCurrencies
+                    .stream()
+                    .filter(it -> it.getCurrency().name().equals(currency.name()))
+                    .findFirst()
+                    .orElseThrow();
+            resultList.add(currencyItem);
+        }
+        return resultList;
     }
 
-    @Data
-    public static class CurrencyItemPrivat {
-        private Currency ccy;
-        private Currency base_ccy;
-        private float buy;
-        private float sale;
-    }
+        /*
+         * Example of reply JSON:
+         * [
+         *   {},
+         *   ...
+         *   ,{
+         *       "ccy":"EUR",
+         *       "base_ccy":"UAH",
+         *       "buy":"34.97420",
+         *       "sale":"37.45318"
+         *   },
+         *   ...,
+         *   {}
+         * ]
+         */
 
-}
+        private static class CurrencyItemPrivatbank extends AbstractCurrencyItem {
+            @Getter
+            @Setter
+            private Currency ccy;
+            @Getter
+            @Setter
+            private Currency base_ccy;
+
+            @Override
+            public Currency getCurrency() {
+                return ccy;
+            }
+
+            @Override
+            public Currency getBaseCurrency() {
+                return base_ccy;
+            }
+        }
+    }
