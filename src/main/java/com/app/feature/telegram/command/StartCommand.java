@@ -1,6 +1,5 @@
 package com.app.feature.telegram.command;
 
-
 import com.app.feature.currency.dto.Bank;
 import com.app.feature.currency.dto.Currency;
 import com.app.feature.telegram.PropertiesConstants;
@@ -21,7 +20,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class StartCommand extends BotCommand {
-
     private static final String BOT_NAME = "Currency Exchange Bot";
     public static final String GET_INFO_BUTTON_TEXT = "Get info";
     public static final String SETTING_BUTTON_TEXT = "Settings";
