@@ -5,48 +5,40 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import org.jsoup.Jsoup;
-import java.util.concurrent.TimeUnit;
 
 
 public final class Utilities {
+    public static final String RATES_JSON_PATH_NBU = "./src/main/resources/Currency_NBU_rates.json";
+    public static final String RATES_JSON_PATH_PRIVATBANK = "./src/main/resources/Currency_Privat_rates.json";
+    public static final String RATES_JSON_PATH_MONOBANK = "./src/main/resources/Currency_Mono_rates.json";
+
+    /*
+     * Monobank may return 429 HTTP status "Too many requests" if requested too often
+     * 60_000 (60 seconds) timeout tested to be sufficient
+     */
+    public static final int UPDATE_PERIOD = 360_000;
 
     //Get request from API
-    public static String getAPIRequest(String url) {
-        String json;
-        try {
-            json = Jsoup
-                    .connect(url)
-                    .ignoreContentType(true)
-                    .get()
-                    .body()
-                    .text();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new IllegalStateException("getAPIRequest method error");
-        }
-        return json;
+    public static String getCurrencies(String url) throws IOException {
+        return Jsoup
+                .connect(url)
+                .ignoreContentType(true)
+                .get()
+                .body()
+                .text();
     }
 
     //check for API error
     public static boolean checkNbuCurrencyError() {
-        return CurrencyJsonUpdate.isNbuCheckErr();
+        return CurrencyJsonUpdateService.isNbuCheckErr();
     }
 
     public static boolean checkPrivatCurrencyError() {
-        return CurrencyJsonUpdate.isPrivatCheckErr();
+        return CurrencyJsonUpdateService.isPrivatbankCheckErr();
     }
 
     public static boolean checkMonoCurrencyError() {
-        return CurrencyJsonUpdate.isMonoCheckErr();
-    }
-
-    //wait
-    public static void wait(int seconds) {
-        try {
-            TimeUnit.SECONDS.sleep(seconds);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        return CurrencyJsonUpdateService.isMonobankCheckErr();
     }
 
     //write from json
