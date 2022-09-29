@@ -278,9 +278,9 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
 
     @Override
     public void processNonCommandUpdate(Update update) {
-        chatId = update.getCallbackQuery().getMessage().getChatId();
-        Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
         if (update.hasCallbackQuery()) {
+            chatId = update.getCallbackQuery().getMessage().getChatId();
+            Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
             if (update.getCallbackQuery().getData().equals("get_info")) {
                 onGetInfoPressed();
             } else if (update.getCallbackQuery().getData().equals("settings")) {
@@ -325,7 +325,10 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
                 System.out.println("Non-command here!");
             }
         } else
-            System.out.println("Non-command here!");
+            System.out.println("Unsupported command or callback received"
+                    + " from User \"" + update.getMessage().getFrom().getUserName() + "\""
+                    + " in chat with id \"" + update.getMessage().getChatId() + "\""
+                    + ", chat message is: \"" + update.getMessage().getText() + "\".");
     }
 
     @Override
