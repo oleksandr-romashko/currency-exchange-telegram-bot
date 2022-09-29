@@ -5,10 +5,12 @@ public enum Bank {
     PrivatBank("PrivatBank"),
     Monobank("Monobank");
 
-    Bank(String name) {
+    private final String fullName;
+    Bank(String fullName) {
+        this.fullName = fullName;
     }
 
-    public String getName() {
-        return name();
+    public String getFullName() {
+        return fullName;
     }
 }
