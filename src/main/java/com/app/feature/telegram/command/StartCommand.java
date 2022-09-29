@@ -1,7 +1,7 @@
 package com.app.feature.telegram.command;
 
+import com.app.feature.api.dto.Currency;
 import com.app.feature.currency.dto.Bank;
-import com.app.feature.currency.dto.Currency;
 import com.app.feature.telegram.PropertiesConstants;
 import com.app.feature.user.UserInfo;
 import com.app.feature.user.UserUtil;
