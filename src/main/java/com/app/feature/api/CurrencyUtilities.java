@@ -7,7 +7,7 @@ import java.io.IOException;
 import org.jsoup.Jsoup;
 
 
-public final class Utilities {
+public final class CurrencyUtilities {
     public static final String RATES_JSON_PATH_NBU = "./src/main/resources/Currency_NBU_rates.json";
     public static final String RATES_JSON_PATH_PRIVATBANK = "./src/main/resources/Currency_Privat_rates.json";
     public static final String RATES_JSON_PATH_MONOBANK = "./src/main/resources/Currency_Mono_rates.json";
@@ -42,7 +42,7 @@ public final class Utilities {
     }
 
     //write from json
-    public static String writeFromJsonFile(String fileName) {
+    public static String readFromJsonFile(String fileName) {
         String result = null;
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             result = reader.readLine();
