@@ -23,9 +23,10 @@ public class MonoCurrencyService implements CurrencyService {
 
         //replace for enum Currency
         String replaceJson = takeJsonFromFile
-                .replace(":840", ":USD")
-                .replace(":978", ":EUR")
                 .replace(":980", ":UAH")
+                .replace(":978", ":EUR")
+                .replace(":840", ":USD")
+                .replace(":810", ":RUB")
                 .replace(":826", ":GBP");
 
         //Convert json => Java Object
