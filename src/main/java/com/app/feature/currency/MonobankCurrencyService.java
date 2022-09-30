@@ -45,7 +45,6 @@ public class MonobankCurrencyService implements CurrencyService {
                 .getParameterized(List.class, CurrencyItemMono.class)
                 .getType();
         List<CurrencyItemMono> currencyItemMono = new Gson().fromJson(json, typeToken);
-        System.out.println("currencyItemMono = " + currencyItemMono);
 
 
         //find rate
