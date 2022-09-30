@@ -27,6 +27,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
 
         register(new StartCommand());
         register(new GetInfoCommand());
+        register(new SettingsCommand());
     }
 
     public CurrencyTelegramBot(Long chatId) {
@@ -35,6 +36,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
 
         register(new StartCommand());
         register(new GetInfoCommand());
+        register(new SettingsCommand());
     }
 
     private void sendMessageWithKeyboard(String text, String chatId, InlineKeyboardMarkup keyboard) {
@@ -104,7 +106,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
         onBackToMenuPressed(text.toString());
     }
 
-    private void onSettingsPressed() {
+    public void onSettingsPressed() {
         System.out.println("Settings pressed!");
 
         List<InlineKeyboardButton> keyboardRow1 = new ArrayList<>(List.of(createButton("Number of decimal places", "number_of_decimal_places")));
@@ -328,10 +330,10 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
                 System.out.println("Non-command here!");
             }
         } else
-            System.out.println("Unsupported command or callback received"
-                    + " from User \"" + update.getMessage().getFrom().getUserName() + "\""
-                    + " in chat with id \"" + update.getMessage().getChatId() + "\""
-                    + ", chat message is: \"" + update.getMessage().getText() + "\".");
+            System.out.println("Unsupported command or callback received");
+//                    + " from User \"" + update.getMessage().getFrom().getUserName() + "\""
+//                    + " in chat with id \"" + update.getMessage().getChatId() + "\""
+//                    + ", chat message is: \"" + update.getMessage().getText() + "\".");
     }
 
     @Override
