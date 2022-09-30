@@ -18,7 +18,6 @@ public class PrettyPrintCurrencyService {
     public String convert(Map<String, Double> currencyRates, List<Currency> currencies, int rounding, Bank bank) {
         StringBuilder res = new StringBuilder();
         for (Currency currency : currencies) {
-            System.out.println("currencyRates = " + currencyRates);
             String currencyFirstFlag = getCurrencyFlag(Currency.UAH.name());
             String currencySecondFlag = getCurrencyFlag(currency.name());
 
