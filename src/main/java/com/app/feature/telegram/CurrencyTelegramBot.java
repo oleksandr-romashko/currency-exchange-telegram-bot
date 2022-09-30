@@ -26,6 +26,15 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
         prettyPrintCurrencyService = new PrettyPrintCurrencyService();
 
         register(new StartCommand());
+        register(new GetInfoCommand());
+    }
+
+    public CurrencyTelegramBot(Long chatId) {
+        prettyPrintCurrencyService = new PrettyPrintCurrencyService();
+        this.chatId = chatId;
+
+        register(new StartCommand());
+        register(new GetInfoCommand());
     }
 
     private void sendMessageWithKeyboard(String text, String chatId, InlineKeyboardMarkup keyboard) {
@@ -82,9 +91,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
                 .append(System.lineSeparator().repeat(2));
     }
 
-    ;
-
-    private void onGetInfoPressed() {
+    public void onGetInfoPressed() {
         System.out.println("Get_info pressed!");
 
         int rounding = userUtil.getRoundingByUserId(chatId);
