@@ -37,7 +37,6 @@ public class NBUCurrencyService implements CurrencyService{
                 .getParameterized(List.class, CurrencyItemNBU.class)
                 .getType();
         List<CurrencyItemNBU> currencyItemsNBU = new Gson().fromJson(json, typeToken);
-        System.out.println("currencyItemsNBU = " + currencyItemsNBU);
 
         //Find currency
         double currencyRate = currencyItemsNBU.stream()
