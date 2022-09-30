@@ -1,10 +1,7 @@
 package com.app.feature.telegram;
 
-import com.app.feature.currency.CurrencyService;
-import com.app.feature.currency.PrivatBankCurrencyService;
 import com.app.feature.currency.dto.Bank;
 import com.app.feature.currency.dto.Currency;
-import com.app.feature.currency.dto.CurrencyItem;
 import com.app.feature.telegram.command.*;
 import com.app.feature.telegram.ui.PrettyPrintCurrencyService;
 import com.app.feature.user.UserUtil;
@@ -17,20 +14,15 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
-    private final CurrencyService currencyService;
     private final PrettyPrintCurrencyService prettyPrintCurrencyService;
     private final UserUtil userUtil = new UserUtil();
     private Long chatId;
 
     public CurrencyTelegramBot() {
-        currencyService = new PrivatBankCurrencyService();
         prettyPrintCurrencyService = new PrettyPrintCurrencyService();
 
         register(new StartCommand());
@@ -88,12 +80,23 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
 
         int rounding = userUtil.getRoundingByUserId(chatId);
         List<Currency> savedCurrency = userUtil.getCurrencyTypeByUserId(chatId);
-        System.out.println("savedCurrency = " + savedCurrency);
-        List<CurrencyItem> currencyRateListPrivat = currencyService.getRate(savedCurrency);
-        System.out.println("currencyRateListPrivat = " + currencyRateListPrivat);
+        List<Bank> savedBanks = userUtil.getBankTypeByUserId(chatId);
+        StringBuilder text = new StringBuilder();
+        for (Bank bank : savedBanks) {
+            StringBuilder forOneBank = new StringBuilder("Exchange rate in " + bank.getFullName() + ":");
+            for (Currency currency : savedCurrency) {
+                if ((bank == Bank.Monobank && currency == Currency.RUB) || (bank == Bank.PrivatBank && currency == Currency.GBP)) {
+                    forOneBank.append(prettyPrintCurrencyService.convertNotSupportedCurrency(bank.getFullName(), currency));
+                    continue;
+                }
+                Map<String, Double> currencyRate = bank.getCurrencyService().getRate(currency);
+                forOneBank.append(prettyPrintCurrencyService.convert(currencyRate, currency, rounding));
+            }
+            text.append(forOneBank)
+                    .append(System.lineSeparator().repeat(2));
+        }
 
-        String prettyText = prettyPrintCurrencyService.convert(currencyRateListPrivat, rounding);
-        onBackToMenuPressed(prettyText);
+        onBackToMenuPressed(text.toString());
     }
 
     private void onSettingsPressed() {
@@ -140,7 +143,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
         Integer newNumber = Integer.valueOf(param[0]);
         System.out.println(newNumber + " decimal places option pressed!");
         Integer savedRounding = userUtil.getRoundingByUserId(chatId);
-        if(!newNumber.equals(savedRounding)) {
+        if (!newNumber.equals(savedRounding)) {
             userUtil.setRoundingByUserId(chatId, newNumber);
             savedRounding = userUtil.getRoundingByUserId(chatId);
 
@@ -177,7 +180,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
         List<Currency> savedCurrency = userUtil.getCurrencyTypeByUserId(chatId);
 
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-        for (Currency currency : Arrays.stream(Currency.values()).limit(3).collect(Collectors.toList())) {
+        for (Currency currency : Arrays.stream(Currency.values()).filter(it -> it != Currency.UAH).collect(Collectors.toList())) {
             rowList.add(List.of(createButton(getCurrencyButton(savedCurrency, currency), "Currency:" + currency)));
         }
         createBackToSettingsButton(rowList);
@@ -210,7 +213,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
         String newAlarmTime = param[0];
         String savedAlarmTime = userUtil.getAlarmTimeByUserId(chatId);
         System.out.println(newAlarmTime + " notification option pressed!");
-        if(!Objects.equals(newAlarmTime, savedAlarmTime)) {
+        if (!Objects.equals(newAlarmTime, savedAlarmTime)) {
             userUtil.setAlarmTimeByUserId(chatId, newAlarmTime);
             savedAlarmTime = userUtil.getAlarmTimeByUserId(chatId);
 
