@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class NBUCurrencyService implements CurrencyService{
     @Override
-    public Map<String, Double> getRate(Currency currency) {
+    public Map<String, Double> getRate(List<Currency> currencies) {
         String url = "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json";
 
         //get JSON from bank API
@@ -38,15 +38,16 @@ public class NBUCurrencyService implements CurrencyService{
                 .getType();
         List<CurrencyItemNBU> currencyItemsNBU = new Gson().fromJson(json, typeToken);
 
-        //Find currency
-        double currencyRate = currencyItemsNBU.stream()
-                .filter(it -> it.getCc() == currency)
-                .map(CurrencyItemNBU::getRate)
-                .collect(Collectors.toList()).get(0);
-
+        //Find rates
         Map<String, Double> rate = new HashMap<>();
-        rate.put("rate" + currency, currencyRate);
+        for (Currency currency: currencies) {
+            double currencyRate = currencyItemsNBU.stream()
+                    .filter(it -> it.getCc() == currency)
+                    .map(CurrencyItemNBU::getRate)
+                    .findFirst().orElse(-1f);
 
+            rate.put("rate" + currency, currencyRate);
+        }
         return rate;
     }
 }

@@ -1,8 +1,10 @@
 package com.app.feature.telegram.ui;
 
+import com.app.feature.currency.dto.Bank;
 import com.app.feature.currency.dto.Currency;
 import com.vdurmont.emoji.EmojiParser;
 
+import java.util.List;
 import java.util.Map;
 
 public class PrettyPrintCurrencyService {
@@ -13,57 +15,60 @@ public class PrettyPrintCurrencyService {
     private final String ua_emoji = EmojiParser.parseToUnicode(":ua:");
     private final String gb_emoji = EmojiParser.parseToUnicode(":gb:");
 
-    public String convert(Map<String, Double> currencyRate, Currency currency, int rounding) {
+    public String convert(Map<String, Double> currencyRates, List<Currency> currencies, int rounding, Bank bank) {
         StringBuilder res = new StringBuilder();
-        String currencyFirstFlag = getCurrencyFlag(Currency.UAH.name());
-        String currencySecondFlag = getCurrencyFlag(currency.name());
+        for (Currency currency : currencies) {
+            System.out.println("currencyRates = " + currencyRates);
+            String currencyFirstFlag = getCurrencyFlag(Currency.UAH.name());
+            String currencySecondFlag = getCurrencyFlag(currency.name());
 
-        if(currencyRate.containsKey("rate" + currency)){
-            float roundedRate = Math.round(currencyRate.get("rate" + currency) * Math.pow(10, rounding)) / (float) Math.pow(10, rounding);
-            res.append(System.lineSeparator())
-                    .append(" ".repeat(4))
-                    .append(Currency.UAH.name())
-                    .append("/")
-                    .append(currency.name())
-                    .append(" ".repeat(3))
-                    .append(currencyFirstFlag)
-                    .append("/")
-                    .append(currencySecondFlag)
-                    .append(System.lineSeparator())
-                    .append(" ".repeat(8))
-                    .append("Rate: ")
-                    .append(roundedRate);
-            return res.toString();
+            if (currencyRates.containsKey("rate" + currency)) {
+                float roundedRate = Math.round(currencyRates.get("rate" + currency) * Math.pow(10, rounding)) / (float) Math.pow(10, rounding);
+                res.append(System.lineSeparator())
+                        .append(" ".repeat(4))
+                        .append(Currency.UAH.name())
+                        .append("/")
+                        .append(currency.name())
+                        .append(" ".repeat(3))
+                        .append(currencyFirstFlag)
+                        .append("/")
+                        .append(currencySecondFlag)
+                        .append(System.lineSeparator())
+                        .append(" ".repeat(8))
+                        .append("Rate: ")
+                        .append(roundedRate);
+            } else if(currencyRates.containsKey("buy" + currency)  && currencyRates.get("buy" + currency) == -1) {
+                convertNotSupportedCurrency(bank.getFullName(), currency, res);
+            } else {
+                float roundedBuyRate = Math.round(currencyRates.get("buy" + currency) * Math.pow(10, rounding)) / (float) Math.pow(10, rounding);
+                float roundedSaleRate = Math.round(currencyRates.get("sell" + currency) * Math.pow(10, rounding)) / (float) Math.pow(10, rounding);
+
+                res.append(System.lineSeparator())
+                        .append(" ".repeat(4))
+                        .append(Currency.UAH.name())
+                        .append("/")
+                        .append(currency.name())
+                        .append(" ".repeat(3))
+                        .append(currencyFirstFlag)
+                        .append("/")
+                        .append(currencySecondFlag)
+                        .append(System.lineSeparator())
+                        .append(" ".repeat(8))
+                        .append("Buying: ")
+                        .append(roundedBuyRate)
+                        .append(" / ")
+                        .append("Selling: ")
+                        .append(roundedSaleRate);
+            }
         }
-        float roundedBuyRate = Math.round(currencyRate.get("buy" + currency) * Math.pow(10, rounding)) / (float) Math.pow(10, rounding);
-        float roundedSaleRate = Math.round(currencyRate.get("sell" + currency) * Math.pow(10, rounding)) / (float) Math.pow(10, rounding);
-
-        res.append(System.lineSeparator())
-                .append(" ".repeat(4))
-                .append(Currency.UAH.name())
-                .append("/")
-                .append(currency.name())
-                .append(" ".repeat(3))
-                .append(currencyFirstFlag)
-                .append("/")
-                .append(currencySecondFlag)
-                .append(System.lineSeparator())
-                .append(" ".repeat(8))
-                .append("Buying: ")
-                .append(roundedBuyRate)
-                .append(" / ")
-                .append("Selling: ")
-                .append(roundedSaleRate);
-
         return res.toString();
     }
 
-    public String convertNotSupportedCurrency(String bank, Currency currency) {
-        StringBuilder res = new StringBuilder();
+    public void convertNotSupportedCurrency(String bank, Currency currency, StringBuilder text) {
         String currencyFirstFlag = getCurrencyFlag(Currency.UAH.name());
         String currencySecondFlag = getCurrencyFlag(currency.name());
 
-        res.append(System.lineSeparator())
+        text.append(System.lineSeparator())
                 .append(" ".repeat(4))
                 .append(Currency.UAH.name())
                 .append("/")
@@ -79,8 +84,6 @@ public class PrettyPrintCurrencyService {
                 .append(" doesn't support this specific currency - ")
                 .append(currency.name())
                 .append("!");
-
-        return res.toString();
     }
 
     public String getCurrencyFlag(String currencyName) {

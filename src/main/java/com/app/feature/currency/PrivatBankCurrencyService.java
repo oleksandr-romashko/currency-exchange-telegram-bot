@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class PrivatBankCurrencyService implements CurrencyService {
     @Override
-    public Map<String, Double> getRate(Currency currency) {
+    public Map<String, Double> getRate(List<Currency> currencies) {
         String url = "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=11";
 
         //get JSON from bank API
@@ -42,21 +42,22 @@ public class PrivatBankCurrencyService implements CurrencyService {
         List<CurrencyItemPrivat> receivedApiCurrencies = new Gson().fromJson(json, typeToken);
 
 
-        //find rate
-        double privatBuy = receivedApiCurrencies.stream()
-                .filter(it -> it.getCcy() == currency)
-                .map(CurrencyItemPrivat::getBuy)
-                .collect(Collectors.toList()).get(0);
-
-        double privatSale = receivedApiCurrencies.stream()
-                .filter(it -> it.getCcy() == currency)
-                .map(CurrencyItemPrivat::getSale)
-                .collect(Collectors.toList()).get(0);
-
+        //find rates
         Map<String, Double> rate = new HashMap<>();
-        rate.put("buy" + currency, privatBuy);
-        rate.put("sell" + currency, privatSale);
+        for (Currency currency: currencies) {
+            double privatBuy = receivedApiCurrencies.stream()
+                    .filter(it -> it.getCcy() == currency)
+                    .map(CurrencyItemPrivat::getBuy)
+                    .findFirst().orElse(-1f);
 
+            double privatSale = receivedApiCurrencies.stream()
+                    .filter(it -> it.getCcy() == currency)
+                    .map(CurrencyItemPrivat::getSale)
+                    .findFirst().orElse(-1f);
+
+            rate.put("buy" + currency, privatBuy);
+            rate.put("sell" + currency, privatSale);
+        }
         return rate;
     }
 }

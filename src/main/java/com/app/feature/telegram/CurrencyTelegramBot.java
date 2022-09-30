@@ -84,14 +84,16 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
         StringBuilder text = new StringBuilder();
         for (Bank bank : savedBanks) {
             StringBuilder forOneBank = new StringBuilder("Exchange rate in " + bank.getFullName() + ":");
-            for (Currency currency : savedCurrency) {
-                if ((bank == Bank.Monobank && currency == Currency.RUB) || (bank == Bank.PrivatBank && currency == Currency.GBP)) {
-                    forOneBank.append(prettyPrintCurrencyService.convertNotSupportedCurrency(bank.getFullName(), currency));
-                    continue;
-                }
-                Map<String, Double> currencyRate = bank.getCurrencyService().getRate(currency);
-                forOneBank.append(prettyPrintCurrencyService.convert(currencyRate, currency, rounding));
-            }
+//            for (Currency currency : savedCurrency) {
+//                if ((bank == Bank.Monobank && currency == Currency.RUB) || (bank == Bank.PrivatBank && currency == Currency.GBP)) {
+//                    forOneBank.append(prettyPrintCurrencyService.convertNotSupportedCurrency(bank.getFullName(), currency));
+//                    continue;
+//                }
+//                Map<String, Double> currencyRate = bank.getCurrencyService().getRate(currency);
+//                forOneBank.append(prettyPrintCurrencyService.convert(currencyRate, currency, rounding));
+//            }
+            Map<String, Double> currencyRates = bank.getCurrencyService().getRate(savedCurrency);
+            forOneBank.append(prettyPrintCurrencyService.convert(currencyRates, savedCurrency, rounding, bank));
             text.append(forOneBank)
                     .append(System.lineSeparator().repeat(2));
         }

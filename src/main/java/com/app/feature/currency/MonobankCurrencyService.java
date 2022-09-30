@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class MonobankCurrencyService implements CurrencyService {
     @Override
-    public Map<String, Double> getRate(Currency currency) {
+    public Map<String, Double> getRate(List<Currency> currencies) {
         String url = "https://api.monobank.ua/bank/currency";
 
         //get JSON from bank API
@@ -47,32 +47,32 @@ public class MonobankCurrencyService implements CurrencyService {
         List<CurrencyItemMono> currencyItemMono = new Gson().fromJson(json, typeToken);
 
 
-        //find rate
+        //find rates
         Map<String, Double> rate = new HashMap<>();
-        if (currency == Currency.GBP) {
-            double monoCrossCurseGBP = currencyItemMono.stream()
-                    .filter(it -> it.getCurrencyCodeA() == currency)
-                    .map(CurrencyItemMono::getRateCross)
-                    .collect(Collectors.toList()).get(0);
+        for (Currency currency: currencies) {
+            if (currency == Currency.GBP) {
+                double monoCrossCurseGBP = currencyItemMono.stream()
+                        .filter(it -> it.getCurrencyCodeA() == currency)
+                        .map(CurrencyItemMono::getRateCross)
+                        .findFirst().orElse(-1f);
 
 
-            rate.put("rate" + currency, monoCrossCurseGBP);
-            return rate;
-        } else {
-            double monoBuy = currencyItemMono.stream()
-                    .filter(it -> it.getCurrencyCodeA() == currency)
-                    .map(CurrencyItemMono::getRateBuy)
-                    .collect(Collectors.toList()).get(0);
+                rate.put("rate" + currency, monoCrossCurseGBP);
+            } else {
+                double monoBuy = currencyItemMono.stream()
+                        .filter(it -> it.getCurrencyCodeA() == currency)
+                        .map(CurrencyItemMono::getRateBuy)
+                        .findFirst().orElse(-1f);
 
-            double monoSell = currencyItemMono.stream()
-                    .filter(it -> it.getCurrencyCodeA() == currency)
-                    .map(CurrencyItemMono::getRateSell)
-                    .collect(Collectors.toList()).get(0);
+                double monoSell = currencyItemMono.stream()
+                        .filter(it -> it.getCurrencyCodeA() == currency)
+                        .map(CurrencyItemMono::getRateSell)
+                        .findFirst().orElse(-1f);
 
-            rate.put("buy" + currency, monoBuy);
-            rate.put("sell" + currency, monoSell);
-
-            return rate;
+                rate.put("buy" + currency, monoBuy);
+                rate.put("sell" + currency, monoSell);
+            }
         }
+            return rate;
     }
 }
