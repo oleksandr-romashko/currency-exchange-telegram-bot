@@ -36,7 +36,8 @@ public class PrettyPrintCurrencyService {
                         .append(" ".repeat(8))
                         .append("Rate: ")
                         .append(roundedRate);
-            } else if(currencyRates.containsKey("buy" + currency)  && currencyRates.get("buy" + currency) == -1) {
+            } else if((currencyRates.containsKey("buy" + currency)  && currencyRates.get("buy" + currency) == -1) ||
+                    (currencyRates.containsKey("rate" + currency)  && currencyRates.get("rate" + currency) == -1)) {
                 convertNotSupportedCurrency(bank.getFullName(), currency, res);
             } else {
                 float roundedBuyRate = Math.round(currencyRates.get("buy" + currency) * Math.pow(10, rounding)) / (float) Math.pow(10, rounding);

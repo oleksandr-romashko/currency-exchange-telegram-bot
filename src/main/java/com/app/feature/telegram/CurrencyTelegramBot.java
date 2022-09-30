@@ -75,6 +75,15 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
         rowList.add(List.of(createButton("Back to settings", "back_to_settings")));
     }
 
+    private void makeFinalText(StringBuilder text, Bank bank, List<Currency> savedCurrency, int rounding) {
+        text.append("Exchange rate in ").append(bank.getFullName()).append(":");
+        Map<String, Double> currencyRates = bank.getCurrencyService().getRate(savedCurrency);
+        text.append(prettyPrintCurrencyService.convert(currencyRates, savedCurrency, rounding, bank))
+                .append(System.lineSeparator().repeat(2));
+    }
+
+    ;
+
     private void onGetInfoPressed() {
         System.out.println("Get_info pressed!");
 
@@ -83,38 +92,29 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
         List<Bank> savedBanks = userUtil.getBankTypeByUserId(chatId);
         StringBuilder text = new StringBuilder();
         for (Bank bank : savedBanks) {
-            StringBuilder forOneBank = new StringBuilder("Exchange rate in " + bank.getFullName() + ":");
-            Map<String, Double> currencyRates = bank.getCurrencyService().getRate(savedCurrency);
-            forOneBank.append(prettyPrintCurrencyService.convert(currencyRates, savedCurrency, rounding, bank));
-            text.append(forOneBank)
-                    .append(System.lineSeparator().repeat(2));
+            makeFinalText(text, bank, savedCurrency, rounding);
         }
-
         onBackToMenuPressed(text.toString());
     }
 
     private void onSettingsPressed() {
         System.out.println("Settings pressed!");
 
-        InlineKeyboardButton decimalPlacesButton = InlineKeyboardButton.builder().text("Number of decimal places").callbackData("number_of_decimal_places").build();
-        InlineKeyboardButton currencyButton = InlineKeyboardButton.builder().text("Currency").callbackData("currency").build();
-        InlineKeyboardButton notificationTimeButton = InlineKeyboardButton.builder().text("Notification time").callbackData("notification_time").build();
-        InlineKeyboardButton bankButton = InlineKeyboardButton.builder().text("Bank").callbackData("bank").build();
-        InlineKeyboardButton getInfoButton = InlineKeyboardButton.builder().text("Back to main menu").callbackData("main_menu").build();
-        List<InlineKeyboardButton> keyboardRow1 = new ArrayList<>(List.of(decimalPlacesButton));
-        List<InlineKeyboardButton> keyboardRow2 = new ArrayList<>(List.of(currencyButton));
-        List<InlineKeyboardButton> keyboardRow3 = new ArrayList<>(List.of(notificationTimeButton));
-        List<InlineKeyboardButton> keyboardRow4 = new ArrayList<>(List.of(bankButton));
-        List<InlineKeyboardButton> keyboardRow5 = new ArrayList<>(List.of(getInfoButton));
+        List<InlineKeyboardButton> keyboardRow1 = new ArrayList<>(List.of(createButton("Number of decimal places", "number_of_decimal_places")));
+        List<InlineKeyboardButton> keyboardRow2 = new ArrayList<>(List.of(createButton("Currency", "currency")));
+        List<InlineKeyboardButton> keyboardRow3 = new ArrayList<>(List.of(createButton("Notification time", "notification_time")));
+        List<InlineKeyboardButton> keyboardRow4 = new ArrayList<>(List.of(createButton("Bank", "bank")));
+        List<InlineKeyboardButton> keyboardRow5 = new ArrayList<>(List.of(createButton("Back to main menu", "main_menu")));
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>(List.of(keyboardRow1, keyboardRow2, keyboardRow3, keyboardRow4, keyboardRow5));
 
         sendMessageWithKeyboard("Settings:", chatId.toString(), createKeyboard(rowList));
     }
 
     private void onBackToMenuPressed(String text) {
-        InlineKeyboardButton getInfoButton = InlineKeyboardButton.builder().text("Get info").callbackData("get_info").build();
-        InlineKeyboardButton settingsButton = InlineKeyboardButton.builder().text("Settings").callbackData("settings").build();
-        List<List<InlineKeyboardButton>> rowList = new ArrayList<>(List.of(List.of(getInfoButton), List.of(settingsButton)));
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>(List.of(
+                List.of(createButton("Get info", "get_info")),
+                List.of(createButton("Settings", "settings"))
+        ));
         sendMessageWithKeyboard(text, chatId.toString(), createKeyboard(rowList));
     }
 
@@ -149,7 +149,6 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
 
             editMessageWithKeyboard(messageId, chatId.toString(), createKeyboard(rowList));
         }
-
     }
 
     private void onCurrencyPressed() {
