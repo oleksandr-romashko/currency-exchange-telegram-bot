@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public abstract class AbstractCurrencyItem {
-    protected Currency currency;
+    protected String currency;
     protected Currency baseCurrency;
     protected float buy;
     protected float sale;
