@@ -11,31 +11,47 @@ public class PrettyPrintCurrencyService {
     private final String rub_emoji = EmojiParser.parseToUnicode(":ru:");
     private final String ua_emoji = EmojiParser.parseToUnicode(":ua:");
 
-    public String convert(List<AbstractCurrencyItem> currencyItemPrivatList, int rounding) {
+    public String convert(List<AbstractCurrencyItem> currencyItemList, int rounding) {
         StringBuilder res = new StringBuilder("Exchange rate in PrivatBank:");
-        for(AbstractCurrencyItem currencyItemPrivat : currencyItemPrivatList) {
-            String currencyFirstFlag = getCurrencyFlag(currencyItemPrivat.getCurrency().name());
+        for(AbstractCurrencyItem currencyItemPrivat : currencyItemList) {
+            String currencyFirstFlag = getCurrencyFlag(currencyItemPrivat.getCurrency());
             String currencySecondFlag = getCurrencyFlag(currencyItemPrivat.getBaseCurrency().name());
 
             float roundedBuyRate = Math.round(currencyItemPrivat.getBuy() * Math.pow(10, rounding))/(float)Math.pow(10, rounding);
             float roundedSaleRate = Math.round(currencyItemPrivat.getSale() * Math.pow(10, rounding))/(float)Math.pow(10, rounding);
 
-            res.append(System.lineSeparator())
-                    .append(" ".repeat(4))
-                    .append(currencyItemPrivat.getBaseCurrency())
-                    .append("/")
-                    .append(currencyItemPrivat.getCurrency().name())
-                    .append(" ".repeat(3))
-                    .append(currencySecondFlag)
-                    .append("/")
-                    .append(currencyFirstFlag)
-                    .append(System.lineSeparator())
-                    .append(" ".repeat(8))
-                    .append("Buying: ")
-                    .append(roundedBuyRate)
-                    .append(" / ")
-                    .append("Selling: ")
-                    .append(roundedSaleRate);
+            if (roundedSaleRate != 0) {
+                res.append(System.lineSeparator())
+                        .append(" ".repeat(4))
+                        .append(currencyItemPrivat.getBaseCurrency())
+                        .append("/")
+                        .append(currencyItemPrivat.getCurrency())
+                        .append(" ".repeat(3))
+                        .append(currencySecondFlag)
+                        .append("/")
+                        .append(currencyFirstFlag)
+                        .append(System.lineSeparator())
+                        .append(" ".repeat(8))
+                        .append("Buying: ")
+                        .append(roundedBuyRate)
+                        .append(" / ")
+                        .append("Selling: ")
+                        .append(roundedSaleRate);
+            } else {
+                res.append(System.lineSeparator())
+                        .append(" ".repeat(4))
+                        .append(currencyItemPrivat.getBaseCurrency())
+                        .append("/")
+                        .append(currencyItemPrivat.getCurrency())
+                        .append(" ".repeat(3))
+                        .append(currencySecondFlag)
+                        .append("/")
+                        .append(currencyFirstFlag)
+                        .append(System.lineSeparator())
+                        .append(" ".repeat(8))
+                        .append("Rate: ")
+                        .append(roundedBuyRate);
+            }
         }
         return res.toString();
     }
