@@ -12,7 +12,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PrivateBankCurrencyService implements CurrencyService {
+public class PrivatbankCurrencyService implements CurrencyService {
 
     @Override
     public List<AbstractCurrencyItem> getRates(List<Currency> savedCurrency) {
