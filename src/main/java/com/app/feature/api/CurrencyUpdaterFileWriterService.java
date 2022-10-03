@@ -16,6 +16,8 @@ public class CurrencyUpdaterFileWriterService implements Runnable {
     /*
      * Monobank may return 429 HTTP status "Too many requests" if requested too often
      * 60_000 (60 seconds) timeout tested to be sufficient
+     * According to information on site, information is chashed and posted no
+     * more often than every 5 minutes
      */
     public static final int UPDATE_PERIOD_SECONDS = 360;
 
