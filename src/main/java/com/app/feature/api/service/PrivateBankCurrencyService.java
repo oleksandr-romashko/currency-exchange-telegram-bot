@@ -35,7 +35,7 @@ public class PrivateBankCurrencyService implements CurrencyService {
         for(Currency currency : savedCurrency) {
             AbstractCurrencyItem currencyItem = receivedApiCurrencies
                     .stream()
-                    .filter(it -> it.getCurrency().name().equals(currency.name()))
+                    .filter(it -> it.getCurrency().equals(currency.name()))
                     .findFirst()
                     .orElseThrow();
             resultList.add(currencyItem);
@@ -62,13 +62,13 @@ public class PrivateBankCurrencyService implements CurrencyService {
         private static class CurrencyItemPrivatbank extends AbstractCurrencyItem {
             @Getter
             @Setter
-            private Currency ccy;
+            private String ccy;
             @Getter
             @Setter
             private Currency base_ccy;
 
             @Override
-            public Currency getCurrency() {
+            public String getCurrency() {
                 return ccy;
             }
 
