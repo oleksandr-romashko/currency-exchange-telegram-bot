@@ -1,10 +1,10 @@
 package com.app.feature.telegram;
 
-import com.app.feature.currency.CurrencyService;
-import com.app.feature.currency.PrivatBankCurrencyService;
+import com.app.feature.api.dto.AbstractCurrencyItem;
+import com.app.feature.api.dto.Currency;
+import com.app.feature.api.service.CurrencyService;
+import com.app.feature.api.service.PrivatbankCurrencyService;
 import com.app.feature.currency.dto.Bank;
-import com.app.feature.currency.dto.Currency;
-import com.app.feature.currency.dto.CurrencyItem;
 import com.app.feature.telegram.command.*;
 import com.app.feature.telegram.ui.PrettyPrintCurrencyService;
 import com.app.feature.user.UserUtil;
@@ -30,7 +30,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
     private Long chatId;
 
     public CurrencyTelegramBot() {
-        currencyService = new PrivatBankCurrencyService();
+        currencyService = new PrivatbankCurrencyService();
         prettyPrintCurrencyService = new PrettyPrintCurrencyService();
 
         register(new StartCommand());
@@ -86,13 +86,15 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
     private void onGetInfoPressed() {
         System.out.println("Get_info pressed!");
 
-        int rounding = userUtil.getRoundingByUserId(chatId);
+        //TODO add banks services processing
+        int savedRounding = userUtil.getRoundingByUserId(chatId);
         List<Currency> savedCurrency = userUtil.getCurrencyTypeByUserId(chatId);
         System.out.println("savedCurrency = " + savedCurrency);
-        List<CurrencyItem> currencyRateListPrivat = currencyService.getRate(savedCurrency);
-        System.out.println("currencyRateListPrivat = " + currencyRateListPrivat);
 
-        String prettyText = prettyPrintCurrencyService.convert(currencyRateListPrivat, rounding);
+        List<AbstractCurrencyItem> currencyRateList = currencyService.getRates(savedCurrency);
+        System.out.println("currencyRateList = " + currencyRateList);
+
+        String prettyText = prettyPrintCurrencyService.convert(currencyRateList, savedRounding);
         onBackToMenuPressed(prettyText);
     }
 
