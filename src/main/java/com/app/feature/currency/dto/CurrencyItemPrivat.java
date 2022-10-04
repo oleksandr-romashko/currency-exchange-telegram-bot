@@ -3,7 +3,7 @@ package com.app.feature.currency.dto;
 import lombok.Data;
 
 @Data
-public class CurrencyItem {
+public class CurrencyItemPrivat {
     private Currency ccy;
     private Currency base_ccy;
     private float buy;

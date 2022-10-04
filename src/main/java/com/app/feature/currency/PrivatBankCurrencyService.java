@@ -1,19 +1,21 @@
 package com.app.feature.currency;
 
 import com.app.feature.currency.dto.Currency;
-import com.app.feature.currency.dto.CurrencyItem;
+import com.app.feature.currency.dto.CurrencyItemPrivat;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.jsoup.Jsoup;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class PrivatBankCurrencyService implements CurrencyService {
     @Override
-    public List<CurrencyItem> getRate(List<Currency> currencyList) {
+    public Map<String, Double> getRate(List<Currency> currencies) {
         String url = "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=11";
 
         //get JSON from bank API
@@ -35,22 +37,27 @@ public class PrivatBankCurrencyService implements CurrencyService {
 
         //convert JSON to Java objects
         Type typeToken = TypeToken
-                .getParameterized(List.class, CurrencyItem.class)
+                .getParameterized(List.class, CurrencyItemPrivat.class)
                 .getType();
-        List<CurrencyItem> receivedApiCurrencies = new Gson().fromJson(json, typeToken);
-        System.out.println("receivedApiCurrencies = " + receivedApiCurrencies);
+        List<CurrencyItemPrivat> receivedApiCurrencies = new Gson().fromJson(json, typeToken);
 
-        //find CurrencyItem
-        List<CurrencyItem> resultList = new ArrayList<>();
-        for(Currency currency : currencyList) {
-            CurrencyItem currencyItem = receivedApiCurrencies
-                    .stream()
-                    .filter(it -> it.getCcy().name().equals(currency.name()))
-                    .findFirst()
-                    .orElseThrow();
-            resultList.add(currencyItem);
+
+        //find rates
+        Map<String, Double> rate = new HashMap<>();
+        for (Currency currency: currencies) {
+            double privatBuy = receivedApiCurrencies.stream()
+                    .filter(it -> it.getCcy() == currency)
+                    .map(CurrencyItemPrivat::getBuy)
+                    .findFirst().orElse(-1f);
+
+            double privatSale = receivedApiCurrencies.stream()
+                    .filter(it -> it.getCcy() == currency)
+                    .map(CurrencyItemPrivat::getSale)
+                    .findFirst().orElse(-1f);
+
+            rate.put("buy" + currency, privatBuy);
+            rate.put("sell" + currency, privatSale);
         }
-
-        return resultList;
+        return rate;
     }
 }
