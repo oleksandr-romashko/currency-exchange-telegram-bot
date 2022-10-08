@@ -1,9 +1,10 @@
 package com.app.feature.currency;
 
 import com.app.feature.currency.dto.Currency;
-import com.app.feature.currency.dto.CurrencyItemNBU;
+import com.app.feature.currency.dto.CurrencyItem;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import lombok.Data;
 import org.jsoup.Jsoup;
 
 import java.io.IOException;
@@ -11,7 +12,6 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class NBUCurrencyService implements CurrencyService{
     @Override
@@ -42,12 +42,41 @@ public class NBUCurrencyService implements CurrencyService{
         Map<String, Double> rate = new HashMap<>();
         for (Currency currency: currencies) {
             double currencyRate = currencyItemsNBU.stream()
-                    .filter(it -> it.getCc() == currency)
-                    .map(CurrencyItemNBU::getRate)
+                    .filter(it -> it.getTypeOfChangeCurrency() == currency)
+                    .map(CurrencyItem::getRate)
                     .findFirst().orElse(-1f);
 
             rate.put("rate" + currency, currencyRate);
         }
         return rate;
+    }
+
+    @Data
+    public static class CurrencyItemNBU implements CurrencyItem {
+        private int r030;
+        private String txt;
+        private float rate;
+        private Currency cc;
+        private String exchangeDate;
+
+        @Override
+        public Currency getTypeOfChangeCurrency() {
+            return cc;
+        }
+
+        @Override
+        public Currency getTypeOfBaseCurrency() {
+            return Currency.UAH;
+        }
+
+        @Override
+        public float getBuyRate() {
+            return -1;
+        }
+
+        @Override
+        public float getSellRate() {
+            return -1;
+        }
     }
 }

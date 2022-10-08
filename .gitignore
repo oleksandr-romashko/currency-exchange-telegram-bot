@@ -50,4 +50,8 @@ bin/
 # Ignore Gradle build output directory
 /build/
 
+# Ignore file with users info
 users.json
+
+# Ignore properties of application
+application.properties

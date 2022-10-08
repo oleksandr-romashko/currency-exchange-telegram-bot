@@ -82,6 +82,10 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
                 .build();
     }
 
+    private void createBackToMainMenuButton(List<List<InlineKeyboardButton>> rowList) {
+        rowList.add(List.of(createButton("Back to main menu", "main_menu")));
+    }
+
     private void createBackToSettingsButton(List<List<InlineKeyboardButton>> rowList) {
         rowList.add(List.of(createButton("Back to settings", "back_to_settings")));
     }
@@ -137,6 +141,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
             rowList.add(List.of(createButton(getRoundingButton(savedRounding, i), i + ":_decimal_places")));
         }
         createBackToSettingsButton(rowList);
+        createBackToMainMenuButton(rowList);
 
         sendMessageWithKeyboard(text, chatId.toString(), createKeyboard(rowList));
     }
@@ -170,6 +175,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
             rowList.add(List.of(createButton(getCurrencyButton(savedCurrencies, currency), "Currency:" + currency)));
         }
         createBackToSettingsButton(rowList);
+        createBackToMainMenuButton(rowList);
 
         sendMessageWithKeyboard(text, chatId.toString(), createKeyboard(rowList));
     }
@@ -206,6 +212,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
         List<InlineKeyboardButton> keyboardRow4 = new ArrayList<>(List.of(buttons.get(9), turnOffNotificationsButton));
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>(List.of(keyboardRow1, keyboardRow2, keyboardRow3, keyboardRow4));
         createBackToSettingsButton(rowList);
+        createBackToMainMenuButton(rowList);
 
         sendMessageWithKeyboard(text, chatId.toString(), createKeyboard(rowList));
     }
@@ -245,6 +252,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingCommandBot {
             rowList.add(List.of(createButton(getBankButton(savedBanks, bank), "Bank:" + bank)));
         }
         createBackToSettingsButton(rowList);
+        createBackToMainMenuButton(rowList);
 
         sendMessageWithKeyboard(text, chatId.toString(), createKeyboard(rowList));
     }
